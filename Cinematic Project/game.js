@@ -6,6 +6,7 @@ class LogoScene extends Phaser.Scene {
     preload() {
         this.load.path = "./assets/";
         this.load.image("logo", "logo.png");
+        this.load.audio("swoosh", ["swoosh.mp3"]);
     }
 
     create() {
@@ -74,6 +75,12 @@ class LogoScene extends Phaser.Scene {
             repeat: 0
         });
 
+        let swoosh = this.sound.add("swoosh",
+        {
+            delay: 8000
+        });
+        swoosh.play();
+
         setTimeout(() => {
             this.scene.start("Title"); 
         }, 11000);
@@ -90,6 +97,7 @@ class Title extends Phaser.Scene {
         this.load.image("island", "island.png");
         this.load.image("cloud1", "cloud1.png");
         this.load.image("cloud2", "cloud2.png");
+        this.load.audio("theme", "menu_theme.mp3");
 
         let background = this.add.graphics();
 
@@ -98,6 +106,19 @@ class Title extends Phaser.Scene {
     }
 
     create() {
+
+        let swoosh = this.sound.add("swoosh",
+        {
+            delay: 8000
+        });
+        swoosh.play();
+
+        let theme = this.sound.add("theme",
+        {
+            loop: true,
+            volume: 0.4
+        });
+        theme.play();
 
         let island = this.add.image(
             400, -300,
@@ -233,12 +254,13 @@ class Title extends Phaser.Scene {
         this.input.keyboard.on('keydown-SPACE', () => {
             this.tweens.add({
                 targets: [cloud1, cloud2, cloud3, cloud4, island, title, space],
-                x: -600,
-                alpha: 0, 
+                x: -600, 
                 duration: 4000,
                 ease: "Linear",
                 repeat: 0
             });
+
+            this.cameras.main.fadeOut(4000, 0x8E, 0xA6, 0xFF);
 
             setTimeout(() => {
                 this.scene.start("Menu"); 
@@ -265,6 +287,12 @@ class Menu extends Phaser.Scene {
     }
 
     create() {
+
+        let swoosh = this.sound.add("swoosh",
+        {
+            delay: 8000
+        });
+        swoosh.play();
 
         let island = this.add.image(
             1500, 400,
@@ -374,7 +402,10 @@ let config = {
     width: 800,
     height: 600,
     backgroundColor: 0x0021A1,
-    scene: [LogoScene, Title, Menu]
+    scene: [LogoScene, Title, Menu],
+    audio: {
+        disableWebAudio: true
+    }
 }
 
 let game = new Phaser.Game(config);

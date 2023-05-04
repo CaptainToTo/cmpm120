@@ -50,17 +50,20 @@ class AdventureScene extends Phaser.Scene {
             });
 
         this.onEnter();
-
+        
+        this.messageTimeOut = null;
     }
 
     showMessage(message) {
         this.messageBox.setText(message);
-        this.tweens.add({
-            targets: this.messageBox,
-            alpha: { from: 1, to: 0 },
-            easing: 'Quintic.in',
-            duration: 4 * this.transitionDuration
-        });
+
+        if (this.messageTimeOut != null) {
+            clearTimeout(this.messageTimeOut);
+        }
+
+        this.messageTimeOut = setTimeout(() => {
+            this.messageBox.setText("");
+        }, 4 * this.transitionDuration);
     }
 
     updateInventory() {

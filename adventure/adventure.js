@@ -151,3 +151,42 @@ class AdventureScene extends Phaser.Scene {
         console.warn('This AdventureScene did not implement onEnter():', this.constructor.name);
     }
 }
+
+// ------------------------------------------------------------
+
+class Interactable {
+    constructor(scene, x, y, texture, description, state, action, frame={}) {
+        this.image = scene.add.image(x, y, texture, frame);
+        this.scene = scene;
+        this.description = description;
+        this.state = state;
+        this.action = action;
+
+        this.image.setInteractive()
+            .on('pointerover', () => {
+                this.scene.showMessage(this.description);
+                this.scene.tweens.add({
+                    targets: this.image,
+                    scale: this.image.scale + 0.1,
+                    duration: 100
+                })
+            })
+            .on('pointerout', () => {
+                this.scene.showMessage("")
+                this.scene.tweens.add({
+                    targets: this.image,
+                    scale: this.image.scale - 0.1,
+                    duration: 100
+                })
+            })
+            .on('pointerdown', () => {this.action()});
+    }
+
+    setScale(scale) {
+        this.image.setScale(scale);
+    }
+
+    setTexture(texture) {
+        this.image.setTexture(texture);
+    }
+}

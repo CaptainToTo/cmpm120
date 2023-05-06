@@ -59,7 +59,54 @@ class Intro extends Phaser.Scene {
 
         setTimeout(() => {
             this.cameras.main.fade(500, 0,0,0);
-            this.time.delayedCall(500, () => this.scene.start('demo1'));
+            this.time.delayedCall(500, () => this.scene.start('Menu'));
         }, 7000);
+    }
+}
+
+class Menu extends Phaser.Scene {
+    constructor() {
+        super('Menu')
+    }
+
+    preload() {
+        this.load.path = "./assets/";
+        this.load.image("title", "loopy-house.png");
+        this.load.image("switch-left-off", "switch-left-off.png");
+        this.load.image("switch-left-on", "switch-left-on.png");
+    }
+
+    create() {
+        this.cameras.main.fadeIn(500, 0, 0, 0);
+
+        this.title = this.add.image(
+            game.canvas.width / 2, 300,
+            "title"
+        );
+        this.title.setScale(1.2);
+
+        this.messageBox = this.add.text(game.canvas.width / 2 + 75, game.canvas.height / 2 + 225, "",
+        {
+            font:"65px Arial",
+            align: "center",
+            color: "#FFFFFF",
+        });
+
+        this.switch = new Interactable(this, 
+            game.canvas.width / 2 - 150, game.canvas.height / 2 + 300, "switch-left-off", 
+            "Turn On The Lights", "off", () => {
+                if (this.switch.state == "off") {
+                    this.switch.setTexture("switch-left-on");
+                    this.switch.state = "on";
+                } else {
+                    this.switch.setTexture("switch-left-off");
+                    this.switch.state = "off";
+                }
+            });
+        this.switch.setScale(0.6);
+    }
+
+    showMessage(message) {
+        this.messageBox.setText(message);
     }
 }

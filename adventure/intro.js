@@ -98,6 +98,7 @@ class Menu extends Phaser.Scene {
                 if (this.switch.state == "off") {
                     this.switch.setTexture("switch-left-on");
                     this.switch.state = "on";
+                    this.time.delayedCall(50, () => this.scene.start('Kitchen1'));
                 } else {
                     this.switch.setTexture("switch-left-off");
                     this.switch.state = "off";

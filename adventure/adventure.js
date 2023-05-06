@@ -4,9 +4,24 @@ class AdventureScene extends Phaser.Scene {
         this.inventory = data.inventory || [];
     }
 
-    constructor(key, name) {
+    constructor(key, name, background="", backgroundScale=0) {
         super(key);
         this.name = name;
+        this.background = background;
+        this.backgroundScale = backgroundScale;
+    }
+
+    preload() {
+        if (this.background != "") {
+            this.load.path = "./assets/";
+            this.load.image(this.scene.key + "-background", this.background);
+        }
+
+        this.loadAssets();
+    }
+
+    loadAssets() {
+        console.log("loading assets handled by children class.");
     }
 
     create() {
@@ -18,6 +33,11 @@ class AdventureScene extends Phaser.Scene {
 
         this.cameras.main.setBackgroundColor('#444');
         this.cameras.main.fadeIn(this.transitionDuration, 0, 0, 0);
+
+        if (this.background != "") {
+            let background = this.add.image(this.w * 0.375, this.h * 0.5, this.scene.key + "-background");
+            background.setScale(this.backgroundScale);
+        }
 
         this.add.rectangle(this.w * 0.75, 0, this.w * 0.25, this.h).setOrigin(0, 0).setFillStyle(0);
         this.add.text(this.w * 0.75 + this.s, this.s)
@@ -153,6 +173,9 @@ class AdventureScene extends Phaser.Scene {
 }
 
 // ------------------------------------------------------------
+// Interactable class created by Anthony Umemoto
+// has simple "pop-up" effect for hovering over the interactable
+// can specify a function for the action to be taken when interactable is clicked on
 
 class Interactable {
     constructor(scene, x, y, texture, description, state, action, frame={}) {
@@ -161,22 +184,23 @@ class Interactable {
         this.description = description;
         this.state = state;
         this.action = action;
+        this.originalScale = this.image.scale;
 
         this.image.setInteractive()
             .on('pointerover', () => {
                 this.scene.showMessage(this.description);
                 this.scene.tweens.add({
                     targets: this.image,
-                    scale: this.image.scale + 0.1,
-                    duration: 100
+                    scale: this.originalScale + (this.originalScale * 0.1),
+                    duration: 150
                 })
             })
             .on('pointerout', () => {
                 this.scene.showMessage("")
                 this.scene.tweens.add({
                     targets: this.image,
-                    scale: this.image.scale - 0.1,
-                    duration: 100
+                    scale: this.originalScale,
+                    duration: 150
                 })
             })
             .on('pointerdown', () => {this.action()});
@@ -184,6 +208,7 @@ class Interactable {
 
     setScale(scale) {
         this.image.setScale(scale);
+        this.originalScale = scale;
     }
 
     setTexture(texture) {

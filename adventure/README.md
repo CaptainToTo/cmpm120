@@ -9,7 +9,7 @@ Code requirements:
     - Enhancement 3: Added a loadAssets() methods that acts like a preload(). This is so scenes can load their own assets without having to overload the preload() method they inheret from AdventureScene.
 
 Experience requirements:
-- **4+ locations in the game world**: unsatisfied (name at least 4 of the classes).
+- **4+ locations in the game world**: Kitchen, Livingroom, Backyard, Entrance.
 - **2+ interactive objects in most scenes**: light switches, doors, and keys.
 - **Many objects have `pointerover` messages**: all Interactable objects.
 - **Many objects have `pointerdown` effects**: all Interactable objects.

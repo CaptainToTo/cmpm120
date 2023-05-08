@@ -1,12 +1,13 @@
-let kitchen1doors = {
+let living1doors = {
     door1: "lock",
-    door2: "lock",
+    door2: "open",
+    door3: "lock",
     key: true
 }
 
-class Kitchen1 extends AdventureScene {
+class Living1 extends AdventureScene {
     constructor() {
-        super("Kitchen1", "Kitchen", "kitchen.png", 0.8);
+        super("Living1", "Livingroom", "livingroom.png", 0.8);
     }
 
     loadAssets() {
@@ -31,19 +32,24 @@ class Kitchen1 extends AdventureScene {
             });
         this.switch.setScale(0.2);
         
-        this.door1 = new Door(this, this.w * 0.6, this.h * 0.13, "up", kitchen1doors.door1, 'Living1',
+        this.door1 = new Door(this, this.w * 0.5, this.h * 0.18, "up", living1doors.door1, 'Backyard1',
         () => {
-            kitchen1doors.door1 = "open";
+            living1doors.door1 = "open";
         });
 
-        this.door2 = new Door(this, this.w * 0.595, this.h * 0.85, "down", kitchen1doors.door2, 'Entrance3',
+        this.door2 = new Door(this, this.w * 0.25, this.h * 0.85, "down", living1doors.door2, 'Entrance3',
         () => {
-            kitchen1doors.door2 = "open";
+            living1doors.door2 = "open";
         });
 
-        if (kitchen1doors.key) {
+        this.door3 = new Door(this, this.w * 0.55, this.h * 0.85, "down", living1doors.door3, 'Kitchen2',
+        () => {
+            living1doors.door3 = "open";
+        });
+
+        if (living1doors.key) {
             this.key = new Interactable(this, 
-                this.w * 0.4, this.h * 0.5, "key", 
+                this.w * 0.69, this.h * 0.5, "key", 
                 "An all purpose key that can unlock any door.", "", () => {
                     this.showMessage("You pick up the key.");
                     this.gainItem('key');
@@ -54,23 +60,24 @@ class Kitchen1 extends AdventureScene {
                         duration: 500,
                         onComplete: () => this.key.image.destroy()
                     });
-                    kitchen1doors.key = false;
+                    living1doors.key = false;
                 });
             this.key.setScale(0.2);
         }
     }
 }
 
-// -----------------------------------------------------------------------
+// -------------------------------------------------------------------------------
 
-let kitchen2doors = {
+let living2doors = {
     door1: "open",
-    door2: "lock"
+    door2: "lock",
+    key: true
 }
 
-class Kitchen2 extends AdventureScene {
+class Living2 extends AdventureScene {
     constructor() {
-        super("Kitchen2", "Kitchen", "kitchen.png", 0.8);
+        super("Living2", "Livingroom", "livingroom.png", 0.8);
     }
 
     loadAssets() {
@@ -94,16 +101,33 @@ class Kitchen2 extends AdventureScene {
                 }
             });
         this.switch.setScale(0.2);
-
-        this.door1 = new Door(this, this.w * 0.6, this.h * 0.13, "up", kitchen2doors.door1, 'Living2', 
+        
+        this.door1 = new Door(this, this.w * 0.04, this.h * 0.5, "left", living2doors.door1, 'Kitchen1',
         () => {
-            kitchen2doors.door1 = "open";
+            living2doors.door1 = "open";
         });
 
-        this.door2 = new Door(this, this.w * 0.13, this.h * 0.5, "left", kitchen2doors.door2, 'Outro', 
+        this.door2 = new Door(this, this.w * 0.4, this.h * 0.85, "down", living2doors.door2, 'Kitchen2',
         () => {
-            kitchen2doors.door2 = "open";
+            living2doors.door2 = "open";
         });
-        this.door2.setScale(0.5);
+
+        if (living2doors.key) {
+            this.key = new Interactable(this, 
+                this.w * 0.25, this.h * 0.5, "key", 
+                "An all purpose key that can unlock any door.", "", () => {
+                    this.showMessage("You pick up the key.");
+                    this.gainItem('key');
+                    this.tweens.add({
+                        targets: this.key.image,
+                        y: `-=${2 * this.s}`,
+                        alpha: { from: 1, to: 0 },
+                        duration: 500,
+                        onComplete: () => this.key.image.destroy()
+                    });
+                    living2doors.key = false;
+                });
+            this.key.setScale(0.2);
+        }
     }
 }

@@ -1,4 +1,4 @@
-A simple adventure game by Anthony Umemoto based on a simple adventure game engine by [Adam Smith](https://github.com/rndmcnlly).
+A simple adventure game by [Anthony Umemoto](hhtps://github.com/CaptainToTo) based on a simple adventure game engine by [Adam Smith](https://github.com/rndmcnlly).
 
 Code requirements:
 - **4+ scenes based on `AdventureScene`**: Kitchen, Livingroom, Entrance, and Backyard.
@@ -10,14 +10,16 @@ Code requirements:
 
 Experience requirements:
 - **4+ locations in the game world**: unsatisfied (name at least 4 of the classes).
-- **2+ interactive objects in most scenes**: unsatisfied (describe two examples)
-- **Many objects have `pointerover` messages**: unsatisfied (describe two examples)
-- **Many objects have `pointerdown` effects**: unsatisfied (describe two examples)
-- **Some objects are themselves animated**: unsatisfied (describe two examples)
+- **2+ interactive objects in most scenes**: light switches, doors, and keys.
+- **Many objects have `pointerover` messages**: all Interactable objects.
+- **Many objects have `pointerdown` effects**: all Interactable objects.
+- **Some objects are themselves animated**: keys and doors are animated.
 
 Asset sources:
-- (For each image/audio/video asset used, describe how it was created. What tool did you use to create it? Was it based on another work? If so, how did you change it, and where can we learn more about the original work for comparison? Use [Markdown link syntax](https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax#links).)
+- ATUMEMOT logo was created by me in Adobe Illustrator.
+- All other visual assets were created by me in Aseprite.
 
 Code sources:
 - `adventure.js` and `index.html` were created for this project [Adam Smith](https://github.com/rndmcnlly) and edited by me.
 - `game.js` was sketched by [Adam Smith](https://github.com/rndmcnlly) and rewritten by me.
+- All other `.js` were created by me, using the `AdventureScene` class created by [Adam Smith](https://github.com/rndmcnlly).

@@ -12,10 +12,22 @@ class AdventureScene extends Phaser.Scene {
     }
 
     preload() {
+        this.load.path = "./assets/";
         if (this.background != "") {
-            this.load.path = "./assets/";
             this.load.image(this.scene.key + "-background", this.background);
         }
+
+        this.load.image("switch-right-on", "switch-right-on.png");
+        this.load.image("switch-right-off", "switch-right-off.png");
+        this.load.image("door-up-open", "doors/door-up-open.png");
+        this.load.image("door-up-lock", "doors/door-up-lock.png");
+        this.load.image("door-down-open", "doors/door-down-open.png");
+        this.load.image("door-down-lock", "doors/door-down-lock.png");
+        this.load.image("door-left-open", "doors/door-left-open.png");
+        this.load.image("door-left-lock", "doors/door-left-lock.png");
+        this.load.image("door-right-open", "doors/door-right-open.png");
+        this.load.image("door-right-lock", "doors/door-right-lock.png");
+        this.load.image("key", "key.png");
 
         this.loadAssets();
     }
@@ -77,13 +89,13 @@ class AdventureScene extends Phaser.Scene {
     showMessage(message) {
         this.messageBox.setText(message);
 
-        if (this.messageTimeOut != null) {
+        /*if (this.messageTimeOut != null) {
             clearTimeout(this.messageTimeOut);
         }
 
         this.messageTimeOut = setTimeout(() => {
             this.messageBox.setText("");
-        }, 4 * this.transitionDuration);
+        }, 4 * this.transitionDuration);*/
     }
 
     updateInventory() {
@@ -119,10 +131,10 @@ class AdventureScene extends Phaser.Scene {
     }
 
     gainItem(item) {
-        if (this.inventory.includes(item)) {
+        /*if (this.inventory.includes(item)) {
             console.warn('gaining item already held:', item);
             return;
-        }
+        }*/
         this.inventory.push(item);
         this.updateInventory();
         for (let text of this.inventoryTexts) {
@@ -143,19 +155,21 @@ class AdventureScene extends Phaser.Scene {
             console.warn('losing item not held:', item);
             return;
         }
-        for (let text of this.inventoryTexts) {
-            if (text.text == item) {
+        let i = 0;
+        for (; i < this.inventoryTexts.length; i++) {
+            if (this.inventoryTexts[i].text == item) {
                 this.tweens.add({
-                    targets: text,
-                    x: { from: text.x, to: text.x + 20 },
+                    targets: this.inventoryTexts[i],
+                    x: { from: this.inventoryTexts[i].x, to: this.inventoryTexts[i].x + 20 },
                     alpha: { from: 1, to: 0 },
                     ease: 'Cubic.in',
                     duration: this.transitionDuration
                 });
+                break;
             }
         }
         this.time.delayedCall(500, () => {
-            this.inventory = this.inventory.filter((e) => e != item);
+            this.inventory.splice(i, 1);
             this.updateInventory();
         });
     }
@@ -203,7 +217,20 @@ class Interactable {
                     duration: 150
                 })
             })
-            .on('pointerdown', () => {this.action()});
+            .on('pointerdown', () => {
+                this.scene.tweens.add({
+                    targets: this.image,
+                    scale: this.originalScale,
+                    duration: 100
+                });
+                this.scene.tweens.add({
+                    targets: this.image,
+                    scale: this.originalScale + (this.originalScale * 0.1),
+                    delay: 100,
+                    duration: 100
+                });
+                this.action()
+            });
     }
 
     setScale(scale) {
@@ -213,5 +240,42 @@ class Interactable {
 
     setTexture(texture) {
         this.image.setTexture(texture);
+    }
+}
+
+class Door extends Interactable {
+    constructor(scene, x, y, direction, state, goTo, extra) {
+        let description = "";
+        if (state == "lock") {
+            description = "A locked door. You'll need a key.";
+        } else {
+            description = "An open door. Where could it lead?";
+        }
+        super(scene, x, y, "door-"+direction+"-"+state, description, state, () => {
+            if (this.state == "lock") {
+                if (scene.hasItem("key")) {
+                    scene.loseItem("key");
+                    scene.showMessage("The door is open now!");
+                    this.state = "open";
+                    this.setTexture("door-"+direction+"-open");
+                    this.description = "An open door. Where could it lead?";
+                    extra();
+                } else {
+                    scene.tweens.add({
+                        targets: this.image,
+                        x: '+=' + scene.s,
+                        repeat: 2,
+                        yoyo: true,
+                        ease: 'Sine.inOut',
+                        duration: 100
+                    });
+                    scene.showMessage("It won't open!");
+                }
+            } else {
+                scene.showMessage("Moving on...");
+                scene.time.delayedCall(50, () => scene.gotoScene(goTo));
+            }
+        })
+        this.setScale(0.3);
     }
 }

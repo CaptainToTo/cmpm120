@@ -4,7 +4,7 @@ class Outro extends Phaser.Scene {
     }
     create() {
         this.add.text(game.canvas.width / 2 - 200, game.canvas.height / 2 - 50, 
-        "You Escaped!\nClick anywhere to begin.",
+        "You Escaped!\nClick anywhere to restart.",
             {
                 font:"40px Arial",
                 align: "center",

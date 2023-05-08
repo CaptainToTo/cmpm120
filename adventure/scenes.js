@@ -12,7 +12,7 @@ class Outro extends Phaser.Scene {
             });
         this.input.on('pointerdown', () => {
             this.cameras.main.fade(500, 0xFF,0xFF,0xFF);
-            this.time.delayedCall(500, () => this.scene.start('Intro'));
+            this.time.delayedCall(500, () => location.reload());
         });
     }
 }

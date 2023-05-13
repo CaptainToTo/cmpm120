@@ -61,6 +61,7 @@ class Hand {
         this.scene = scene;
         this.balls = balls;
         this.bounceSpeed = bounceSpeed;
+        this.originalScale = 1.3;
         let self = this;
         scene.input.on('pointermove', function(pointer) {
             self.sprite.x = pointer.x;
@@ -70,12 +71,12 @@ class Hand {
         scene.input.on('pointerdown', () => {
             scene.tweens.add({
                 targets: this.sprite,
-                scale: 1.1,
+                scale: this.originalScale - 0.2,
                 duration: 100
             });
             scene.tweens.add({
                 targets: this.sprite,
-                scale: 1.3,
+                scale: this.originalScale,
                 delay: 100,
                 duration: 100
             });
@@ -86,5 +87,10 @@ class Hand {
                 }
             }
         });
+    }
+
+    setScale(scale) {
+        this.sprite.setScale(scale);
+        this.originalScale = scale;
     }
 }

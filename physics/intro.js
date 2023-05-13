@@ -123,7 +123,7 @@ class Menu extends Phaser.Scene {
 
         
 
-        this.ball = new SelectBall(this, game.canvas.width / 2, -1000, 0.6, -700);
+        this.ball = new SelectBall(this, game.canvas.width / 2, -600, 0.6, -700);
         this.play = this.add.text(0, 0, "PLAY",
         {
             font:"80px Arial",

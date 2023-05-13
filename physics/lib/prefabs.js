@@ -1,8 +1,9 @@
 class Ball {
     constructor(scene, x, y, scale=0.4, bounceSpeed=-500) {
         this.sprite = scene.physics.add.sprite(x, y, "ball");
+        this.scene = scene;
         this.sprite.body.gravity.y = 300;
-        this.sprite.setScale(scale);
+        this.sprite.setScale(scale).setBounce(1, 0.5);
         this.sprite.body.setCircle(this.sprite.width / 2);
         this.bounceSpeed = bounceSpeed;
     }
@@ -18,6 +19,39 @@ class Ball {
             diff.y *= this.bounceSpeed;
         }
         this.sprite.body.setVelocity(diff.x, diff.y);
+    }
+
+    reflect(x, y, speed=0) {
+        let newVel;
+
+        if (x < -0.9 || 0.9 < x) {
+            if (speed != 0) {
+                newVel = speed;
+            } else {
+                newVel = x * Math.abs(this.sprite.body.velocity.x);
+            }
+
+            this.sprite.body.setVelocity(newVel, this.sprite.body.velocity.y);
+        } else {
+            if (speed != 0) {
+                newVel = speed;
+            } else {
+                newVel = -this.sprite.body.velocity.y;
+            }
+
+            this.sprite.body.setVelocity(this.sprite.body.velocity.x, newVel);
+        }
+    }
+}
+
+class SelectBall extends Ball {
+    constructor(scene, x, y, scale=0.4, bounceSpeed=-500) {
+        super(scene, x, y, scale, bounceSpeed=-2000);
+    }
+
+    bounce(collider, speed=0) {
+        this.sprite.body.setVelocity(0, this.bounceSpeed);
+        this.scene.transition();
     }
 }
 

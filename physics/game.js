@@ -5,7 +5,7 @@ const game = new Phaser.Game({
         width: 1080,
         height: 1920
     },
-    scene: [Start, Intro, Menu],
+    scene: [Levels,Start,Menu,  Intro, ],
     powerPerformance: "high-performance",
     title: "Juggler",
     physics: {

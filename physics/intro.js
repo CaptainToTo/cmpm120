@@ -101,6 +101,8 @@ class Menu extends Phaser.Scene {
         this.load.image("R", "title/R.png");
 
         this.load.image("hand", "hand.png");
+        this.load.image("wall", "wall.png");
+        this.load.image("ball", "ball.png");
         
     }
 
@@ -121,12 +123,12 @@ class Menu extends Phaser.Scene {
 
         
 
-        this.ball = new Ball(this, game.canvas.width / 2, -1000, 0.6, -700);
+        this.ball = new SelectBall(this, game.canvas.width / 2, -1000, 0.6, -700);
         this.play = this.add.text(0, 0, "PLAY",
         {
             font:"80px Arial",
             align: "center",
-            color: "#000000",
+            color: "#2AB9FF",
         });
         this.play.setOrigin(0.5, 0.5);
 
@@ -135,24 +137,24 @@ class Menu extends Phaser.Scene {
         this.floor = this.physics.add.image(game.canvas.width / 2, game.canvas.height + 50, "hand").setScale(10, 1);
         this.floor.setImmovable();
 
-        this.rightWall = this.add.rectangle(-50, -100, 50, game.canvas.height + 100);
+        this.rightWall = this.add.tileSprite(-20, game.canvas.height / 2, 80, game.canvas.height, "wall");
         this.physics.add.existing(this.rightWall);
-        this.rightWall.setImmovable();
+        this.rightWall.body.setImmovable();
 
-        this.leftWall = this.add.rectangle(game.canvas.width, -100, 50, game.canvas.height + 100);
+        this.leftWall = this.add.tileSprite(game.canvas.width + 20, game.canvas.height / 2, 80, game.canvas.height, "wall");
         this.physics.add.existing(this.leftWall);
-        this.leftWall.setImmovable();
+        this.leftWall.body.setImmovable();
 
         this.physics.add.collider(this.ball.sprite, this.floor, () => {
-            this.ball.bounce(this.floor);
+            this.ball.reflect(0, 1, -700);
         });
 
         this.physics.add.collider(this.ball.sprite, this.rightWall, () => {
-            this.ball.bounce(this.rightWall, -50);
+            this.ball.reflect(1, 0);
         });
 
         this.physics.add.collider(this.ball.sprite, this.leftWall, () => {
-            this.ball.bounce(this.rightWall, -50);
+            this.ball.reflect(-1, 0);
         });
     }
 
@@ -163,5 +165,33 @@ class Menu extends Phaser.Scene {
 
         this.play.y = this.ball.sprite.y;
         this.play.x = this.ball.sprite.x;
+    }
+
+    transition() {
+        this.tweens.add({
+            targets: this.title,
+            y: game.canvas.height + 300,
+            alpha: 0,
+            duration: 1000,
+            ease: "Linear",
+            repeat: 0
+        });
+        this.tweens.add({
+            targets: this.rightWall,
+            x: -50,
+            alpha: 0,
+            duration: 500,
+            ease: "Linear",
+            repeat: 0
+        });
+        this.tweens.add({
+            targets: this.leftWall,
+            x: game.canvas.width + 50,
+            alpha: 0,
+            duration: 500,
+            ease: "Linear",
+            repeat: 0
+        });
+        this.time.delayedCall(1200, () => this.scene.start('Levels'));
     }
 }

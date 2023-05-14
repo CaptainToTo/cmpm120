@@ -61,11 +61,16 @@ class Intro extends Phaser.Scene {
         });
 
         this.ball1 = new Ball(this, game.canvas.width / 2 + 100, -1000);
+        this.ball1.sprite.body.gravity.y = 300;
         this.ball2 = new Ball(this, game.canvas.width / 2 - 150, -1500);
+        this.ball2.sprite.body.gravity.y = 300;
         this.ball3 = new Ball(this, game.canvas.width / 2 + 220, -1250);
+        this.ball3.sprite.body.gravity.y = 300;
 
         this.ball4 = new Ball(this, game.canvas.width / 2 + 530, -1450);
+        this.ball4.sprite.body.gravity.y = 300;
         this.ball5 = new Ball(this, game.canvas.width / 2 - 600, -1650);
+        this.ball5.sprite.body.gravity.y = 300;
 
         this.physics.add.collider(this.logo, this.ball1.sprite, () => {
             this.ball1.bounce(this.logo);
@@ -123,7 +128,8 @@ class Menu extends Phaser.Scene {
 
         
 
-        this.ball = new SelectBall(this, game.canvas.width / 2, -600, 0.6, -700);
+        this.ball = new SelectBall(this, game.canvas.width / 2, -600, 0.6);
+        this.ball.sprite.body.setVelocity(0, 200);
         this.play = this.add.text(0, 0, "PLAY",
         {
             font:"80px Arial",

@@ -41,7 +41,9 @@ class Levels extends Phaser.Scene {
             this.blocks.list[i].body.setImmovable();
             this.balls.push(new SelectBall(this, 
                 this.blocks.list[i].x + this.levels.x, this.blocks.list[i].y + 100 + this.levels.y, 
-                0.25));
+                0.25, () => {
+                    this.time.delayedCall(2000, () => this.scene.start('Level' + String(i + 1)));
+                }));
 
             this.physics.add.collider(this.balls[i].sprite, this.blocks.list[i], () => {
                 this.balls[i].reflect(0, 1, -200);
@@ -75,6 +77,27 @@ class Levels extends Phaser.Scene {
         for (let i = 0; i < this.text.length; i++) {
             this.text[i].x = this.balls[i].sprite.x;
             this.text[i].y = this.balls[i].sprite.y;
+        }
+    }
+
+    transition() {
+        this.tweens.add({
+            targets: this.levels,
+            y: game.canvas.height + 300,
+            alpha: 0,
+            duration: 1000,
+            ease: "Linear",
+            repeat: 0
+        });
+
+        for(let i = 0; i < this.balls.length; i++) {
+            this.tweens.add({
+                targets: [this.balls[i].sprite, this.text[i]],
+                alpha: 0,
+                duration: 1500,
+                ease: "Linear",
+                repeat: 0
+            });
         }
     }
 }

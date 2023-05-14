@@ -5,13 +5,13 @@ const game = new Phaser.Game({
         width: 1080,
         height: 1920
     },
-    scene: [Start,Levels,Menu,    Intro, ],
+    scene: [Start, Menu, Intro, Levels, Level1, Level2],
     powerPerformance: "high-performance",
     title: "Juggler",
     physics: {
         default: "arcade",
         arcade: {
-            debug: true
+            //debug: true
         }
     }
 });

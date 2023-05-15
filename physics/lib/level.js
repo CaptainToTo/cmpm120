@@ -1,9 +1,10 @@
 class JuggleLevel extends Phaser.Scene {
-    constructor(name, score, balls) {
+    constructor(name, score, balls, flamerate) {
         super(name);
         this.name = name;
         this.score = score;
         this.ballCount = balls;
+        this.flamerate = flamerate;
     }
 
     preload() {
@@ -12,6 +13,7 @@ class JuggleLevel extends Phaser.Scene {
         this.load.image("hand", "hand.png");
         this.load.image("wall", "wall.png");
         this.load.image("ball", "ball.png");
+        this.load.image("flame", "flame.png");
         this.load.image("board", "board.png");
 
         this.load.image("lose", "lose.png");
@@ -55,7 +57,7 @@ class JuggleLevel extends Phaser.Scene {
         this.balls = [];
         for (let i = 0; i < this.ballCount; i++) {
             this.balls.push(new Ball(this, 
-                (Math.random() * (game.canvas.width - 400)) + 200, 
+                (Math.random() * (game.canvas.width - 500)) + 250, 
                 -300
             ));
             this.tweens.add({
@@ -92,12 +94,34 @@ class JuggleLevel extends Phaser.Scene {
         this.floor = this.add.tileSprite(game.canvas.width / 2, game.canvas.height + 100, game.canvas.width, 80, "wall");
         this.physics.add.existing(this.floor);
         this.floor.body.setImmovable();
+
+        this.flames = [];
+        // start generating flames
+        this.TimeOut = setTimeout(() => {
+            this.SpawnFlame();
+        }, 2000);
+    }
+
+    SpawnFlame() {
+        if (Math.random() < this.flamerate) {
+            console.log("flame spawned");
+            let flame = new Flame(this, this.hand, this.balls,
+                (Math.random() * (game.canvas.width - 500)) + 250, -200
+            );
+
+            this.physics.add.collider(flame.sprite, this.rightWall);
+            this.physics.add.collider(flame.sprite, this.leftWall);
+        }
+
+        this.TimeOut = setTimeout(() => {
+            this.SpawnFlame();
+        }, 2000);
     }
 
     update() {
         if (this.scoreboard.score < this.score) {
             for (let i = 0; i < this.balls.length; i++) {
-                if (this.physics.overlap(this.balls[i].sprite, this.floor)){
+                if (this.physics.overlap(this.balls[i].sprite, this.floor)) {
                     this.scoreboard.loseBall();
                     this.balls[i].sprite.destroy();
                 }
@@ -168,6 +192,7 @@ class JuggleLevel extends Phaser.Scene {
 
     Win() {
         for(let i = 0; i < this.balls.length; i++) {
+            if (this.balls[i].sprite.body == undefined) continue;
             this.balls[i].sprite.body.setVelocity(0, -1000);
             this.balls[i].deactivate();
             this.time.delayedCall(1000, () => {

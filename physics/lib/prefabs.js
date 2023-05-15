@@ -68,12 +68,15 @@ class SelectBall extends Ball {
 
 class Hand {
     constructor(scene, balls, bounceSpeed=-700, action) {
-        this.sprite = scene.physics.add.sprite(-100, -100, "hand").setScale(1.3);
+        this.sprite = scene.physics.add.sprite(-100, -100, "hand").setScale(1.3).setImmovable();;
         this.scene = scene;
         this.balls = balls;
         this.bounceSpeed = bounceSpeed;
         this.originalScale = 1.3;
         this.action = action;
+        this.hurt = false;
+        this.TimeOut = null;
+
         let self = this;
         scene.input.on('pointermove', function(pointer) {
             self.sprite.x = pointer.x;
@@ -81,6 +84,7 @@ class Hand {
         });
 
         scene.input.on('pointerdown', () => {
+        if (!this.hurt) {
             scene.tweens.add({
                 targets: this.sprite,
                 scale: this.originalScale - 0.2,
@@ -103,12 +107,27 @@ class Hand {
                     this.action();
                 }
             }
+        }
         });
     }
 
     setScale(scale) {
         this.sprite.setScale(scale);
         this.originalScale = scale;
+    }
+
+    Hurt() {
+        this.hurt = true;
+        this.sprite.tint = 0x666666;
+
+        if (this.TimeOut != null) {
+            clearTimeout(this.TimeOut);
+        }
+
+        this.TimeOut = setTimeout(() => {
+            this.hurt = false;
+            this.sprite.tint = 0xFFFFFF;
+        }, 1000);
     }
 }
 
@@ -256,5 +275,25 @@ class Button extends Interactable {
             }).setOrigin(0.5, 0.5);
         this.container = scene.add.container(x, y);
         this.container.add([this.image, this.text]);
+    }
+}
+
+class Flame {
+    constructor(scene, hand, balls, x, y, scale=1.3) {
+        this.sprite = scene.physics.add.sprite(x, y, "flame").setScale(scale);
+        this.scene = scene;
+        this.sprite.setBounce(1, 0.5);
+        this.sprite.body.gravity.y = 500;
+
+        scene.physics.add.collider(this.sprite, hand.sprite, () => {
+            this.scene.hand.Hurt();
+            this.sprite.disableBody(true, true);
+            this.sprite.destroy();
+        });
+
+        for (let i = 0; i < balls.length; i++) {
+            if (balls[i].sprite.body == undefined) continue;
+            scene.physics.add.collider(this.sprite, balls[i].sprite);
+        }
     }
 }
